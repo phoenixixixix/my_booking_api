@@ -14,4 +14,12 @@ class Property < ApplicationRecord
         .group("properties.id")
         .having("COUNT(DISTINCT assets.title) = ?", asset_titles.size)
   end
+
+  def self.with_location(country:, city:)
+    query = self.joins(:address)
+    query = query.where(address: { country: country }) if country.present?
+    query = query.where(address: { city: city }) if city.present?
+
+    query
+  end
 end

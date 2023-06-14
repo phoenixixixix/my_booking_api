@@ -4,10 +4,15 @@ module V1
       desc "List properties"
       params do
         optional :assets, type: Array[String]
+        optional :country, type: String
+        optional :city, type: String
       end
       get do
         properties = Property.all
         properties = properties.with_specified_assets(params[:assets]) if params[:assets]
+        if params[:country] || params[:city]
+          properties = properties.with_location(country: params[:country], city: params[:city])
+        end
 
         properties
       end
