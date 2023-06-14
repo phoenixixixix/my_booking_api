@@ -1,20 +1,56 @@
 require "rails_helper"
 
 RSpec.describe "Properties", type: :request do
-  describe "GET /properties" do
-    let!(:property) { create(:property) }
+  context "Listing" do
+    describe "GET /properties" do
+      let!(:property) { create(:property) }
 
-    it "returns success code when listing properties" do
-      get "/api/v1/properties"
-      expect(response).to have_http_status(200)
+      it "returns success code when listing properties" do
+        get "/api/v1/properties"
+        expect(response).to have_http_status(200)
+      end
+
+      it "should list properties" do
+        properties = Property.all
+
+        get "/api/v1/properties"
+
+        expect(JSON.parse(response.body)).to eq(JSON.parse(properties.to_json))
+      end
     end
 
-    it "should list properties" do
-      properties = Property.all
+    describe "GET /properties by assets" do
+      let!(:in_scope_property) { create(:property) }
 
-      get "/api/v1/properties"
+      it "returns list of Properties matched by asset" do
+        asset = create(:asset, properties: [in_scope_property])
+        in_scope_property.assets = [asset]
 
-      expect(JSON.parse(response.body)).to eq(JSON.parse(properties.to_json))
+        get "/api/v1/properties?assets[]=#{asset.title}"
+
+        expect(JSON.parse(response.body)).to include(JSON.parse(in_scope_property.to_json))
+      end
+
+      it "returns list of Properties matched by MULTIPLE assets" do
+        asset1 = create(:asset, properties: [in_scope_property])
+        asset2 = create(:asset, properties: [in_scope_property])
+        out_of_scope = create(:property)
+
+        get "/api/v1/properties", params: { assets: [asset1.title, asset2.title] }
+
+        expect(JSON.parse(response.body)).to include(JSON.parse(in_scope_property.to_json))
+        expect(JSON.parse(response.body)).to_not include(JSON.parse(out_of_scope.to_json))
+      end
+
+      it "shouldnt return Properties that are out of scope" do
+        asset = create(:asset, properties: [in_scope_property])
+        out_of_scope = create(:property)
+        out_of_scope.assets.clear
+
+        get "/api/v1/properties?assets[]=#{asset.title}"
+
+        expect(JSON.parse(response.body)).to_not include(JSON.parse(out_of_scope.to_json))
+      end
     end
   end
 

@@ -2,8 +2,14 @@ module V1
   class Properties < Grape::API
     resources :properties do
       desc "List properties"
+      params do
+        optional :assets, type: Array[String]
+      end
       get do
-        Property.all
+        properties = Property.all
+        properties = properties.with_specified_assets(params[:assets]) if params[:assets]
+
+        properties
       end
 
       desc "Creates a property"

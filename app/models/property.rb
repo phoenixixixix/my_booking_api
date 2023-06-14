@@ -5,7 +5,9 @@ class Property < ApplicationRecord
 
   validates :title, :placement_type, presence: true
 
-  def self.property_with_specified_assets(*asset_titles)
+  def self.with_specified_assets(*asset_titles)
+    asset_titles.flatten!
+
     self.joins(:assets)
         .where(assets: { title: asset_titles })
         .group("properties.id")
