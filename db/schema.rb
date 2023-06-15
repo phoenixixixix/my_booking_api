@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_15_113907) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_15_144344) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_15_113907) do
     t.index ["property_id"], name: "index_assets_properties_on_property_id"
   end
 
+  create_table "authentication_tokens", force: :cascade do |t|
+    t.string "token"
+    t.bigint "user_id", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_authentication_tokens_on_user_id"
+  end
+
   create_table "properties", force: :cascade do |t|
     t.string "title", null: false
     t.string "placement_type", null: false
@@ -59,4 +68,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_15_113907) do
   end
 
   add_foreign_key "addresses", "properties"
+  add_foreign_key "authentication_tokens", "users"
 end
