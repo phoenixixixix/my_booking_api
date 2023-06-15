@@ -49,6 +49,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "grape"
+gem "grape-entity"
 
 gem "devise"
 
