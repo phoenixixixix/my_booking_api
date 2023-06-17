@@ -1,9 +1,9 @@
-require_relative "api_exceptions"
+require_relative "concerns/api_exceptions"
 
 module V1
   class API < Grape::API
     helpers Pundit::Authorization
-    include V1::APIExceptions
+    include V1::Concerns::APIExceptions
 
     version "v1", using: :path
     mount V1::Properties

@@ -1,8 +1,8 @@
-require_relative "token_requireable"
+require_relative "concerns/token_requireable"
 
 module V1
   class Assets < Grape::API
-    include V1::TokenRequireable
+    include V1::Concerns::TokenRequireable
 
     resources :assets do
       desc "Create Asset"

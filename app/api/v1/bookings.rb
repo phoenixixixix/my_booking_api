@@ -1,8 +1,8 @@
-require_relative "token_requireable"
+require_relative "concerns/token_requireable"
 
 module V1
   class Bookings < Grape::API
-    include V1::TokenRequireable
+    include V1::Concerns::TokenRequireable
 
     resource :bookings do
       desc "Creates a booking"
