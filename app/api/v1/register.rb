@@ -9,7 +9,8 @@ module V1
         requires :password_confirmation, type: String
       end
       post do
-        { message: "Registered successfully"} if User.create!(declared(params))
+        Member.create!(declared(params))
+        { message: "Registered successfully"}
 
       rescue ActiveRecord::RecordInvalid => e
         error!(e.message, 422)

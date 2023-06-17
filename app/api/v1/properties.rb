@@ -12,7 +12,7 @@ module V1
         optional :city, type: String
       end
       get do
-        properties = Property.all
+        properties = policy_scope(Property)
         properties = properties.with_specified_assets(params[:assets]) if params[:assets]
         if params[:country] || params[:city]
           properties = properties.with_location(country: params[:country], city: params[:city])
@@ -27,19 +27,22 @@ module V1
         requires :placement_type, type: String, allow_blank: false
       end
       post do
-        property = Property.create!(declared(params))
+        property = Property.new(declared(params))
+        authorize property, :create?
+        property.save!
 
         { property: property, message: "Property created successfully" }
       end
 
       desc "Update existing property"
       params do
-        requires :title, type: String, allow_blank: false
-        requires :placement_type, type: String, allow_blank: false
+        optional :title, type: String, allow_blank: false
+        optional :placement_type, type: String, allow_blank: false
       end
       route_param :id, type: Integer do
         put do
           property = Property.find(params[:id])
+          authorize property, :update?
           property.update(declared(params))
 
           { message: "Property updated successfully" }
@@ -52,7 +55,10 @@ module V1
       desc "Deletes existing property"
       route_param :id, type: Integer do
         delete do
-          Property.find(params[:id]).destroy!
+          property = Property.find(params[:id])
+          authorize property, :destroy?
+          property.destroy!
+
           { message: "Property deleted successfully" }
 
         rescue ActiveRecord::RecordNotFound

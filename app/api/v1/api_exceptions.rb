@@ -16,6 +16,12 @@ module V1
           error: e.message,
         }.to_json, 422)
       end
+
+      rescue_from Pundit::NotAuthorizedError do |e|
+        rack_response({
+          error: e.message,
+        }.to_json, 405)
+      end
     end
   end
 end
