@@ -7,6 +7,9 @@ module V1
 
     version "v1", using: :path
     mount V1::Properties
+    mount V1::Bookings
+    mount V1::Assets
+    mount V1::Addresses
     mount V1::Login
     mount V1::Register
 

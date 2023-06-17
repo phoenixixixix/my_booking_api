@@ -1,9 +1,9 @@
 class PropertyPolicy
-  attr_reader :user, :post
+  attr_reader :user, :property
 
   def initialize(user, property)
     @user = user
-    @post = property
+    @property = property
   end
 
   def create?
