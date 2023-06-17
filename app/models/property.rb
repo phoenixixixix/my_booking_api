@@ -3,6 +3,7 @@ class Property < ApplicationRecord
 
   has_one :address, dependent: :delete
   has_and_belongs_to_many :assets
+  has_many :bookings, dependent: :delete_all
 
   validates :title, :placement_type, presence: true
 
