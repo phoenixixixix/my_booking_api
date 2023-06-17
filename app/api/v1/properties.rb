@@ -18,7 +18,7 @@ module V1
           properties = properties.with_location(country: params[:country], city: params[:city])
         end
 
-        properties
+        present properties, with: Entities::PropertyEntity
       end
 
       desc "Creates a property"
