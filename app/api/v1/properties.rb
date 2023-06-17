@@ -1,5 +1,9 @@
+require_relative "token_requireable"
+
 module V1
   class Properties < Grape::API
+    include V1::TokenRequireable
+
     resources :properties do
       desc "List properties"
       params do

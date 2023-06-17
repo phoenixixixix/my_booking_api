@@ -15,4 +15,16 @@ class AuthenticationToken < ApplicationRecord
 
     self.create(token: token, user: user, expires_at: EXPIRATION_TIME)
   end
+
+  def self.valid?(token)
+    if record = self.find_by(token: token)
+      record.expired? ? false : true
+    else
+      false
+    end
+  end
+
+  def expired?
+    expires_at < Time.zone.now
+  end
 end
