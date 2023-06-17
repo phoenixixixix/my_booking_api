@@ -23,15 +23,28 @@ module V1
 
       desc "Creates a property"
       params do
-        requires :title, type: String, allow_blank: false
-        requires :placement_type, type: String, allow_blank: false
+        requires :property, type: Hash do
+          requires :title, type: String
+          requires :placement_type, type: String
+        end
+        requires :address, type: Hash do
+          requires :country, type: String
+          requires :city, type: String
+          requires :street, type: String
+          requires :phone_number, type: String
+        end
       end
       post do
-        property = Property.new(declared(params))
+        property = Property.new(params[:property])
+        address = property.build_address(params[:address])
         authorize property, :create?
-        property.save!
 
-        { property: property, message: "Property created successfully" }
+        if property.valid? && address.valid?
+          property.save!
+          address.save!
+
+          { property: property, address: address, message: "Property created successfully" }
+        end
       end
 
       desc "Update existing property"
