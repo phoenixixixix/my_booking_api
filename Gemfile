@@ -50,6 +50,8 @@ gem "bootsnap", require: false
 
 gem "grape"
 gem "grape-entity"
+gem "kaminari"
+gem "grape-kaminari"
 
 gem "devise"
 

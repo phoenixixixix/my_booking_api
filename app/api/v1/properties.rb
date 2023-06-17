@@ -3,10 +3,12 @@ require_relative "token_requireable"
 module V1
   class Properties < Grape::API
     include V1::TokenRequireable
+    include Grape::Kaminari
 
     resources :properties do
       desc "List properties"
       params do
+        use :pagination, per_page: 10
         optional :assets, type: Array[String]
         optional :country, type: String
         optional :city, type: String
@@ -18,7 +20,7 @@ module V1
           properties = properties.with_location(country: params[:country], city: params[:city])
         end
 
-        present properties, with: Entities::PropertyEntity
+        present :properties, paginate(properties), with: Entities::PropertyEntity
       end
 
       desc "Creates a property"
