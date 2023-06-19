@@ -8,7 +8,7 @@ module V1
         requires :password, type: String, desc: "password"
       end
       post do
-        user = User.find_by_email params[:email]
+        user = User.find_by_email(params[:email])
         if user.present? && user.valid_password?(params[:password])
           token = user.authentication_tokens.valid.first || AuthenticationToken.generate(user)
           present token.user, with: Entities::UserWithTokenEntity
