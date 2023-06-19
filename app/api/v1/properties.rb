@@ -14,7 +14,7 @@ module V1
         optional :city, type: String
       end
       get do
-        properties = policy_scope(Property)
+        properties = policy_scope(Property).includes(:assets, :address, :bookings)
         properties = properties.with_specified_assets(params[:assets]) if params[:assets]
         if params[:country] || params[:city]
           properties = properties.with_location(country: params[:country], city: params[:city])
